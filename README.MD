@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+
 # **Comprehensive React Admin Dashboard for Real-Time Data Management, Interactive Charts, Event Organization, Kanban Task Management, and Full CRM Functionality Built with Refine Framework, TypeScript, GraphQL, Ant Design, Codegen, and Vite**
 
 # 🌟 React Admin Dashboard
@@ -11,13 +12,13 @@
 <br/>
 
 =======
+
 # React Admin Dashboard
 
 # Comprehensive React Admin Dashboard for Real-Time Data Management, Interactive Charts, Event Organization, Kanban Task Management, and Full CRM Functionality Built with Refine Framework, TypeScript, GraphQL, Ant Design, Codegen, and Vite
 
 # 🌟 React Admin Dashboard
 
->>>>>>> 7b1e3e2afe6a220b6ff78f662cb3513ea22be9f2
 ## 🚀 Overview
 
 Welcome to the **React Admin Dashboard**! This project is a comprehensive solution for managing real-time data, visualizing insights through interactive charts, and organizing tasks with a dynamic Kanban board. Built using the **Refine Framework**, this dashboard is tailored for businesses and developers looking to enhance productivity and streamline operations.
