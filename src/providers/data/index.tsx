@@ -1,4 +1,7 @@
-import { GraphQLClient } from "@refinedev/nestjs-query";
+import graphqlDataProvider, {
+  GraphQLClient,
+  liveProvider as graphqlLiveProvider,
+} from "@refinedev/nestjs-query";
 import fetchWrapper from "./fetch-wrapper";
 import { createClient } from "graphql-ws";
 
@@ -17,14 +20,22 @@ export const client = new GraphQLClient(API_URL, {
   },
 });
 
-export const wsCLient = typeof window !== "undefined" ? createClient({
-  url: WS_URL,
-  connectionParams() {
-    const token = localStorage.getItem("access_token");
-    return {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    };
-  },
-})
+export const wsCLient =
+  typeof window !== "undefined"
+    ? createClient({
+        url: WS_URL,
+        connectionParams() {
+          const token = localStorage.getItem("access_token");
+          return {
+            headers: {
+              Authorization: `Bearer ${token}`,
+            },
+          };
+        },
+      })
+    : undefined;
+
+export const dataProvider = graphqlDataProvider(client);
+export const liveProvider = wsCLient
+  ? graphqlLiveProvider(wsCLient)
+  : undefined;
