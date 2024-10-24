@@ -11,7 +11,7 @@ import {
 } from "@refinedev/antd";
 import "@refinedev/antd/dist/reset.css";
 
-import { dataProvider, liveProvider } from "./providers";
+import { authProvider, dataProvider, liveProvider } from "./providers";
 
 import routerBindings, {
   CatchAllNavigate,
@@ -34,10 +34,8 @@ import {
   CategoryList,
   CategoryShow,
 } from "./pages/categories";
-import { ForgotPassword } from "./pages/forgotPassword";
-import { Login } from "./pages/login";
-import { Register } from "./pages/register";
-// import dataProvider from "@refinedev/nestjs-query";
+
+import { Login, Home, Register, ForgotPassword } from "./pages";
 
 function App() {
   return (
@@ -51,7 +49,7 @@ function App() {
               liveProvider={liveProvider}
               notificationProvider={useNotificationProvider}
               routerProvider={routerBindings}
-              // authProvider={authProvider}
+              authProvider={authProvider}
               resources={[
                 {
                   name: "blog_posts",
@@ -127,6 +125,7 @@ function App() {
                   }
                 >
                   <Route path="/login" element={<Login />} />
+                  <Route index element={<Home />} />
                   <Route path="/register" element={<Register />} />
                   <Route path="/forgot-password" element={<ForgotPassword />} />
                 </Route>
