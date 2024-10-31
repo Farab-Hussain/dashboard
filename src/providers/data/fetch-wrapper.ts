@@ -10,16 +10,33 @@ const customFetch = async (url: string, options: RequestInit) => {
 
   const headers = options.headers as Record<string, string>;
 
-  return fetch(url, {
-    ...options,
-    headers: {
-      ...headers,
-      Authorization: headers?.Authorization || `Bearer ${accessToken}`,
-      "Content-Type": "application/json",
-      "Apollo-Request-Preflight": "true",
-    },
-  });
+  console.log("Fetching URL:", url);
+  console.log("Request Options:", options);
+
+  try {
+    const response = await fetch(url, {
+      ...options,
+      headers: {
+        ...headers,
+        Authorization: accessToken ? `Bearer ${accessToken}` : undefined,
+        "Content-Type": "application/json",
+        "Apollo-Request-Preflight": "true",
+      },
+    });
+
+    if (!response.ok) {
+      const errorBody = await response.json();
+      console.error("Error Response:", errorBody);
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    return response;
+  } catch (error) {
+    console.error("Fetch Error:", error);
+    throw error; // Rethrow the error for further handling
+  }
 };
+
 const getGraphQLError = (
   body: Record<"errors", GraphQLFormattedError[] | undefined>
 ): Error | null => {
@@ -30,26 +47,47 @@ const getGraphQLError = (
     };
   }
   if ("errors" in body) {
-    const errors = body?.errors;
-    const message = errors?.map((error) => error.message).join("");
-    const code = errors?.map((error) => error.extensions?.code);
+    const errors = body.errors;
+    const message = errors.map((error) => error.message).join(", ");
+    const code = errors.map((error) => error.extensions?.code);
 
     return {
       message: message || JSON.stringify(body),
-      statusCode: code?.join(",") || "500",
+      statusCode: code.join(", ") || "500",
     };
   }
   return null;
 };
 
 export const fetchWrapper = async (url: string, options: RequestInit) => {
-  const response = await customFetch(url, options);
-  const body = await response.json();
-  const error = getGraphQLError(body);
-  if (error) {
-    throw error;
+  try {
+    const response = await customFetch(url, options);
+
+    // Check if response is OK
+    if (!response.ok) {
+      const body = await response.json();
+      const error = getGraphQLError(body);
+      console.error("Error Response:", body);
+      throw (
+        error || {
+          message: "Network Error",
+          statusCode: response.status.toString(),
+        }
+      );
+    }
+
+    const body = await response.json();
+    const error = getGraphQLError(body);
+    if (error) {
+      console.error("GraphQL Error:", error);
+      throw error;
+    }
+
+    return response;
+  } catch (error) {
+    console.error("Fetch Error:", error);
+    throw { message: "Fetch failed", statusCode: "500", details: error };
   }
-  return response;
 };
 
 export default customFetch;
